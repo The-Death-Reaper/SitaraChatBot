@@ -1,5 +1,3 @@
-sudo apt-get update
-sudo apt-get install
 python3 -m venv chatbot
 . chatbot/bin/activate
 pip3 install flask
