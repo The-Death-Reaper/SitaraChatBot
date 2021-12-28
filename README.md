@@ -9,20 +9,26 @@
   - [x] Math
   - [x] Science (For the available links/videos)
 - [ ] Quiz
-  - [ ] Math
+  - [x] Math
   - [ ] Science
 - [ ] Notes
   - [ ] Math
   - [ ] Science
-- [ ] Doubts/Queries
-  - [ ] Math
-  - [ ] Science
+- [x] Doubts/Queries
 - [ ] Citizenship
+- [ ] Integration with Glific
+  - [ ] Youtube Links
+  - [ ] Quiz
+  - [ ] Notes
+  - [ ] Doubts/Queries
+  - [ ] Citizenship
+  - [ ] :white_large_square
+  - [ ] :white_check_mark
 
 ### Setup
 
 - `bash requirements.sh`
-
+- `. chatbot/bin/activate`
 - `python chatbot_code_v2_test.py`
 
 ### Note
