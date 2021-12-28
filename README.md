@@ -3,33 +3,25 @@
 
 ### Status:
 
-- [x] Flask app
-- [x] Google Sheets API Connection
-- [x] Youtube Links
-  - [x] Math
-  - [x] Science (For the available links/videos)
-- [ ] Quiz
-  - [x] Math
-  - [ ] Science
-- [ ] Notes
-  - [ ] Math
-  - [ ] Science
-- [x] Doubts/Queries
-- [ ] Citizenship
-- [ ] Integration with Glific
-  - [ ] Youtube Links
-  - [ ] Quiz
-  - [ ] Notes
-  - [ ] Doubts/Queries
-  - [ ] Citizenship
-  - [ ] :white_large_square
-  - [ ] :white_check_mark
-
-
-:white_large_square:
-
-:white_check_mark:
-
+- :white_check_mark: Flask app
+- :white_check_mark: Google Sheets API Connection
+- :white_check_mark: Youtube Links
+  - :white_check_mark: Math
+  - :white_check_mark: Science (For the available links/videos)
+- :white_large_square: Quiz
+  - :white_check_mark: Math
+  - :white_large_square: Science
+- :white_large_square: Notes
+  - :white_large_square: Math
+  - :white_large_square: Science
+- :white_check_mark: Doubts/Queries
+- :white_large_square: Citizenship
+- :white_large_square: Integration with Glific
+  - :white_large_square: Youtube Links
+  - :white_large_square: Quiz
+  - :white_large_square: Notes
+  - :white_large_square: Doubts/Queries
+  - :white_large_square: Citizenship 
 ### Setup
 
 - `bash requirements.sh`
