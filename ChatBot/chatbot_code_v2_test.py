@@ -20,7 +20,8 @@ SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.
 SPREADSHEET_ID = '1ku_JyM36zMu2IVxjfUtil9phubcyoQXUkc5VUue_Se8'
 ALLQ_RANGE = 'All Questions!A:F'
 TRANSACTION_RANGE = 'MCQTransactions!A:D'
-YOUTUBE_RANGE = 'YouTube Links!A2:D'
+YOUTUBE_M_RANGE = 'YouTube Links Math!A2:D'
+YOUTUBE_S_RANGE = 'YouTube Links Science!A2:D'
 DCQ_RANGE = "DailyChallenge!A2:E11"
 DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
 DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
@@ -30,7 +31,8 @@ DOUBTS_RANGE='Doubts/Queries!A:C'
 # Question Dictionary
 
 QDict = {}
-YTDict = {}
+YTMDict = {}
+YTSDict = {}
 DCDict = {}
 curr_sheet = ""
 
@@ -50,7 +52,7 @@ def readSheet(sheet):
 				QDict[row[0]].append(row[3])
 				QDict[row[0]].append(row[4])
 
-	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_RANGE).execute()
+	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_M_RANGE).execute()
 	allRows = result.get('values', [])
 
 	if not allRows:
@@ -58,10 +60,27 @@ def readSheet(sheet):
 	else:
 		for row in allRows:
 				#print(row)
-				YTDict[row[0]] = []
-				YTDict[row[0]].append(row[1])
-				YTDict[row[0]].append(row[2])
-				# YTDict[row[0]].append(int(row[3]))
+				YTMDict[row[0]] = []
+				YTMDict[row[0]].append(row[1])
+				YTMDict[row[0]].append(row[2])
+				# YTMDict[row[0]].append(int(row[3]))
+	
+
+	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_S_RANGE).execute()
+	allRows = result.get('values', [])
+
+	if not allRows:
+		print('No Links found.')
+	else:
+		for row in allRows:
+				#print(row)
+				YTSDict[row[0]] = []
+				YTSDict[row[0]].append(row[1])
+				try:
+					YTSDict[row[0]].append(row[2])
+				except:
+					YTSDict[row[0]].append("No Youtube video yet for this chapter")
+				# YTSDict[row[0]].append(int(row[3]))
 
 
 class BasicUser(Resource):
@@ -111,8 +130,13 @@ class Queries(Resource):
 class YouTubeLinks(Resource):
 	def post(self):
 		data= request.get_json()
+		print("here")
 		LinkIdx = data.get("LinkIdx")
-		response = {"ChapterName":YTDict[LinkIdx][0], "Link":YTDict[LinkIdx][1]}
+		Subject = data.get("Subject")
+		if "math" in Subject:
+			response = {"ChapterName":YTMDict[LinkIdx][0], "Link":YTMDict[LinkIdx][1]}
+		elif "science" in Subject:
+			response = {"ChapterName":YTSDict[LinkIdx][0], "Link":YTSDict[LinkIdx][1]}
 		return response, 200
 
 class DailyChallengeQuestion(Resource):
