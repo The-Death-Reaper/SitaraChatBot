@@ -26,7 +26,7 @@ DCQ_RANGE = "DailyChallenge!A2:E11"
 DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
 DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
 MCQ_CHECK_RANGE='LastUserTransaction!A2:G'
-DOUBTS_RANGE='Doubts/Queries!A:C'
+DOUBTS_RANGE='All Transactions - Doubts!A:C'
 
 # Question Dictionary
 
@@ -116,7 +116,7 @@ class Transaction(Resource):
 class Queries(Resource):
 	def post(self):
 		global curr_sheet
-		data= request.get_json()
+		data = request.get_json()
 		TS = str(datetime.datetime.now())
 		Query = data.get("Query")
 		Ph = data.get("Number")
@@ -139,6 +139,7 @@ class YouTubeLinks(Resource):
 			response = {"ChapterName":YTSDict[LinkIdx][0], "Link":YTSDict[LinkIdx][1]}
 		return response, 200
 
+'''
 class DailyChallengeQuestion(Resource):
 	def get(self):
 		global curr_sheet
@@ -189,7 +190,7 @@ class DailyChallengePerformance(Resource):
 			for row in allRows:
 				if(row[1] == Ph):
 					return {"Performance":row[6]}, 200
-
+'''
 class MCQAnswer(Resource):
 	def post(self):
 		global curr_sheet
@@ -245,10 +246,10 @@ def main():
 	api.add_resource(YouTubeLinks, "/api/v1/yt_link", endpoint="YouTubeLinks")
 	api.add_resource(MCQAnswer, "/api/v1/mcq_correction", endpoint="MCQAnswer")
 
-	api.add_resource(DailyChallengeQuestion, "/api/v1/update_challenge", endpoint="UpdateChallenge")
-	api.add_resource(DailyChallengeQuestion, "/api/v1/dc_question", endpoint="DailyChallenge")
-	api.add_resource(DailyChallengeTransaction, "/api/v1/dc_transaction", endpoint="DailyChallengeTransaction")
-	api.add_resource(DailyChallengePerformance, "/api/v1/dc_performance", endpoint="DailyChallengePerformance")
+	# api.add_resource(DailyChallengeQuestion, "/api/v1/update_challenge", endpoint="UpdateChallenge")
+	# api.add_resource(DailyChallengeQuestion, "/api/v1/dc_question", endpoint="DailyChallenge")
+	# api.add_resource(DailyChallengeTransaction, "/api/v1/dc_transaction", endpoint="DailyChallengeTransaction")
+	# api.add_resource(DailyChallengePerformance, "/api/v1/dc_performance", endpoint="DailyChallengePerformance")
 
 	api.add_resource(Queries, "/api/v1/query", endpoint="Queries")
 	api.add_resource(QuestionCount, "/api/v1/qcount", endpoint="QuestionCount")
