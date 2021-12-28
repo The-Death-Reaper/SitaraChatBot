@@ -7,7 +7,7 @@
 - [x] Google Sheets API Connection
 - [x] Youtube Links
   - [x] Math
-  - [x] Science
+  - [x] Science (For the available links/videos)
 - [ ] Quiz
   - [ ] Math
   - [ ] Science
