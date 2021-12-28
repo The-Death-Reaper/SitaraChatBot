@@ -25,6 +25,10 @@
   - [ ] :white_large_square
   - [ ] :white_check_mark
 
+
+:white_large_square
+:white_check_mark
+
 ### Setup
 
 - `bash requirements.sh`
