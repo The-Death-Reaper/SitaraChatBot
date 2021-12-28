@@ -5,10 +5,18 @@
 
 - [x] Flask app
 - [x] Google Sheets API Connection
-- [ ] Youtube Links
+- [x] Youtube Links
+  - [x] Math
+  - [x] Science
 - [ ] Quiz
+  - [ ] Math
+  - [ ] Science
 - [ ] Notes
+  - [ ] Math
+  - [ ] Science
 - [ ] Doubts/Queries
+  - [ ] Math
+  - [ ] Science
 - [ ] Citizenship
 
 ### Setup
