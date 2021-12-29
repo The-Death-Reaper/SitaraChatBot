@@ -22,6 +22,8 @@ ALLQ_RANGE = 'All Questions!A:F'
 TRANSACTION_RANGE = 'MCQTransactions!A:D'
 YOUTUBE_M_RANGE = 'YouTube Links Math!A2:D'
 YOUTUBE_S_RANGE = 'YouTube Links Science!A2:D'
+NOTES_M_RANGE = 'Notes Math!A2:D'
+NOTES_S_RANGE = 'Notes Science!A2:D'
 DCQ_RANGE = "DailyChallenge!A2:E11"
 DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
 DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
@@ -33,11 +35,15 @@ DOUBTS_RANGE='All Transactions - Doubts!A:C'
 QDict = {}
 YTMDict = {}
 YTSDict = {}
+NotesSDict = {}
+NotesMDict = {}
 DCDict = {}
 curr_sheet = ""
 
 # Helper Functions
 def readSheet(sheet):
+
+	# Get all Questions
 	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=ALLQ_RANGE).execute()
 	allRows = result.get('values', [])
 
@@ -52,6 +58,7 @@ def readSheet(sheet):
 				QDict[row[0]].append(row[3])
 				QDict[row[0]].append(row[4])
 
+	# Get Math Youtube Links
 	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_M_RANGE).execute()
 	allRows = result.get('values', [])
 
@@ -64,8 +71,8 @@ def readSheet(sheet):
 				YTMDict[row[0]].append(row[1])
 				YTMDict[row[0]].append(row[2])
 				# YTMDict[row[0]].append(int(row[3]))
-	
 
+	# Get Science Youtube Links
 	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_S_RANGE).execute()
 	allRows = result.get('values', [])
 
@@ -81,6 +88,40 @@ def readSheet(sheet):
 				except:
 					YTSDict[row[0]].append("No Youtube video yet for this chapter")
 				# YTSDict[row[0]].append(int(row[3]))
+
+	# Get Math Notes
+	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_M_RANGE).execute()
+	allRows = result.get('values', [])
+
+	if not allRows:
+		print('No Links found.')
+	else:
+		for row in allRows:
+				#print(row)
+				NotesMDict[row[0]] = []
+				NotesMDict[row[0]].append(row[1])
+				try:
+					NotesMDict[row[0]].append(row[2])
+				except:
+					NotesMDict[row[0]].append("No notes yet for this chapter")
+				# NotesMDict[row[0]].append(int(row[3]))
+
+	# Get Science Notes
+	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_S_RANGE).execute()
+	allRows = result.get('values', [])
+
+	if not allRows:
+		print('No Links found.')
+	else:
+		for row in allRows:
+				#print(row)
+				NotesSDict[row[0]] = []
+				NotesSDict[row[0]].append(row[1])
+				try:
+					NotesSDict[row[0]].append(row[2])
+				except:
+					NotesSDict[row[0]].append("No notes yet for this chapter")
+				# NotesSDict[row[0]].append(int(row[3]))
 
 
 class BasicUser(Resource):
@@ -130,13 +171,25 @@ class Queries(Resource):
 class YouTubeLinks(Resource):
 	def post(self):
 		data= request.get_json()
-		print("here")
+		# print("here")
 		LinkIdx = data.get("LinkIdx")
 		Subject = data.get("Subject")
 		if "math" in Subject:
 			response = {"ChapterName":YTMDict[LinkIdx][0], "Link":YTMDict[LinkIdx][1]}
 		elif "science" in Subject:
 			response = {"ChapterName":YTSDict[LinkIdx][0], "Link":YTSDict[LinkIdx][1]}
+		return response, 200
+
+class NotesLinks(Resource):
+	def post(self):
+		data= request.get_json()
+		# print("here")
+		LinkIdx = data.get("LinkIdx")
+		Subject = data.get("Subject")
+		if "math" in Subject:
+			response = {"ChapterName":NotesMDict[LinkIdx][0], "Link":NotesMDict[LinkIdx][1]}
+		elif "science" in Subject:
+			response = {"ChapterName":NotesSDict[LinkIdx][0], "Link":NotesSDict[LinkIdx][1]}
 		return response, 200
 
 '''
@@ -244,6 +297,7 @@ def main():
 	api.add_resource(BasicUser, "/api/v1/basic_user", endpoint="BasicUser")
 	api.add_resource(Transaction, "/api/v1/transaction", endpoint="Transaction")
 	api.add_resource(YouTubeLinks, "/api/v1/yt_link", endpoint="YouTubeLinks")
+	api.add_resource(NotesLinks, "/api/v1/notes_link", endpoint="NotesLinks")
 	api.add_resource(MCQAnswer, "/api/v1/mcq_correction", endpoint="MCQAnswer")
 
 	# api.add_resource(DailyChallengeQuestion, "/api/v1/update_challenge", endpoint="UpdateChallenge")
