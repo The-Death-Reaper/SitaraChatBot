@@ -12,8 +12,8 @@
   - :white_check_mark: Math
   - :white_large_square: Science
 - :white_large_square: Notes
-  - :white_large_square: Math
-  - :white_large_square: Science
+  - [x] Math (Drive Links Pending)
+  - [x] Science (Drive Links Pending)
 - :white_check_mark: Doubts/Queries
 - :white_large_square: Citizenship
 - :white_large_square: Integration with Glific
