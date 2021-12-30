@@ -17,10 +17,10 @@
 - :white_check_mark: Doubts/Queries
 - :white_large_square: Citizenship
 - :white_large_square: Integration with Glific
-  - :white_large_square: Youtube Links
+  - :white_check_mark: Youtube Links
   - :white_large_square: Quiz
   - :white_large_square: Notes
-  - :white_large_square: Doubts/Queries
+  - :white_check_mark: Doubts/Queries
   - :white_large_square: Citizenship 
 ### Setup
 
