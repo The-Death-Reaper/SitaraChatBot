@@ -24,9 +24,9 @@ YOUTUBE_M_RANGE = 'YouTube Links Math!A2:D'
 YOUTUBE_S_RANGE = 'YouTube Links Science!A2:D'
 NOTES_M_RANGE = 'Notes Math!A2:D'
 NOTES_S_RANGE = 'Notes Science!A2:D'
-DCQ_RANGE = "DailyChallenge!A2:E11"
-DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
-DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
+# DCQ_RANGE = "DailyChallenge!A2:E11"
+# DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
+# DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
 MCQ_CHECK_RANGE='LastUserTransaction!A2:G'
 DOUBTS_RANGE='All Transactions - Doubts!A:C'
 
@@ -69,7 +69,10 @@ def readSheet(sheet):
 				#print(row)
 				YTMDict[row[0]] = []
 				YTMDict[row[0]].append(row[1])
-				YTMDict[row[0]].append(row[2])
+				try:
+					YTMDict[row[0]].append(row[2])
+				except:
+					YTMDict[row[0]].append("No Youtube video yet for this chapter")
 				# YTMDict[row[0]].append(int(row[3]))
 
 	# Get Science Youtube Links
