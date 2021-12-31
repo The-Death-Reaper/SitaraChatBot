@@ -19,7 +19,7 @@ SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.
 # The ID and range of a sample spreadsheet.
 SPREADSHEET_ID = '1ku_JyM36zMu2IVxjfUtil9phubcyoQXUkc5VUue_Se8'
 ALLQ_RANGE = 'All Questions!A:F'
-TRANSACTION_RANGE = 'MCQTransactions!A:D'
+TRANSACTION_RANGE = 'All Transactions - V2!A:D'
 YOUTUBE_M_RANGE = 'YouTube Links Math!A2:D'
 YOUTUBE_S_RANGE = 'YouTube Links Science!A2:D'
 NOTES_M_RANGE = 'Notes Math!A2:D'
@@ -27,7 +27,7 @@ NOTES_S_RANGE = 'Notes Science!A2:D'
 # DCQ_RANGE = "DailyChallenge!A2:E11"
 # DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
 # DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
-MCQ_CHECK_RANGE='LastUserTransaction!A2:G'
+MCQ_CHECK_RANGE='Recent Actitvity Per User - V2!A2:G'
 DOUBTS_RANGE='All Transactions - Doubts!A:C'
 
 # Question Dictionary
