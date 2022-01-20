@@ -7,7 +7,9 @@
 - :white_check_mark: Google Sheets API Connection
 - :white_check_mark: Youtube Links
   - :white_check_mark: Math
+    - :white_check_mark: Links
   - :white_check_mark: Science (For the available links/videos)
+    - :white_check_mark: Links (For the available links/videos)
 - :white_large_square: Quiz
   - :white_check_mark: Math
   - :white_large_square: Science
