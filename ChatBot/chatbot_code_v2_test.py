@@ -1,5 +1,6 @@
 from __future__ import print_function
 import os.path
+from tkinter.messagebox import NO
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -17,11 +18,11 @@ import datetime
 SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
-SPREADSHEET_ID = '1ku_JyM36zMu2IVxjfUtil9phubcyoQXUkc5VUue_Se8'
-ALLQ_RANGE = 'All Questions!A:F'
+SPREADSHEET_ID = '1eRER4f4vc9yFjISIXXhUZ9JBrkBp6GRoCPMKaFkB8Q8'
+ALLQ_RANGE = 'AllQuestions!A:F'
 TRANSACTION_RANGE = 'All Transactions - V2!A:D'
-YOUTUBE_M_RANGE = 'YouTube Links Math!A2:D'
-YOUTUBE_S_RANGE = 'YouTube Links Science!A2:D'
+YOUTUBE_M_RANGE = 'YTLinksMath!A2:D'
+YOUTUBE_S_RANGE = 'YTLinksSci!A2:D'
 NOTES_M_RANGE = 'Notes Math!A2:D'
 NOTES_S_RANGE = 'Notes Science!A2:D'
 # DCQ_RANGE = "DailyChallenge!A2:E11"
@@ -29,7 +30,9 @@ NOTES_S_RANGE = 'Notes Science!A2:D'
 # DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
 MCQ_CHECK_RANGE='Recent Actitvity Per User - V2!A2:G'
 DOUBTS_RANGE='All Transactions - Doubts!A:C'
-
+QUIZ = 0
+NOTES = 0
+YTLINKS = 1
 # Question Dictionary
 
 QDict = {}
@@ -44,87 +47,92 @@ curr_sheet = ""
 def readSheet(sheet):
 
 	# Get all Questions
-	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=ALLQ_RANGE).execute()
-	allRows = result.get('values', [])
+	if QUIZ:
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=ALLQ_RANGE).execute()
+		allRows = result.get('values', [])
 
-	if not allRows:
-		print('No Questions found.')
-	else:
-		for row in allRows:
-				#print(row)
-				QDict[row[0]] = []
-				QDict[row[0]].append(row[1])
-				QDict[row[0]].append(row[2])
-				QDict[row[0]].append(row[3])
-				QDict[row[0]].append(row[4])
+		if not allRows:
+			print('No Questions found.')
+		else:
+			for row in allRows:
+					#print(row)
+					QDict[row[0]] = []
+					QDict[row[0]].append(row[1])
+					QDict[row[0]].append(row[2])
+					QDict[row[0]].append(row[3])
+					QDict[row[0]].append(row[4])
 
 	# Get Math Youtube Links
-	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_M_RANGE).execute()
-	allRows = result.get('values', [])
+	if YTLINKS:
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_M_RANGE).execute()
+		allRows = result.get('values', [])
 
-	if not allRows:
-		print('No Links found.')
-	else:
-		for row in allRows:
-				#print(row)
-				YTMDict[row[0]] = []
-				YTMDict[row[0]].append(row[1])
-				try:
-					YTMDict[row[0]].append(row[2])
-				except:
-					YTMDict[row[0]].append("No Youtube video yet for this chapter")
-				# YTMDict[row[0]].append(int(row[3]))
+		if not allRows:
+			print('No Links found.')
+		else:
+			for row in allRows:
+					#print(row)
+					YTMDict[row[0]] = []
+					YTMDict[row[0]].append(row[1])
+					try:
+						YTMDict[row[0]].append(row[2])
+					except:
+						YTMDict[row[0]].append("No Youtube video yet for this chapter")
+					# YTMDict[row[0]].append(int(row[3]))
+
 
 	# Get Science Youtube Links
-	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_S_RANGE).execute()
-	allRows = result.get('values', [])
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_S_RANGE).execute()
+		allRows = result.get('values', [])
 
-	if not allRows:
-		print('No Links found.')
-	else:
-		for row in allRows:
-				#print(row)
-				YTSDict[row[0]] = []
-				YTSDict[row[0]].append(row[1])
-				try:
-					YTSDict[row[0]].append(row[2])
-				except:
-					YTSDict[row[0]].append("No Youtube video yet for this chapter")
-				# YTSDict[row[0]].append(int(row[3]))
+		if not allRows:
+			print('No Links found.')
+		else:
+			for row in allRows:
+					#print(row)
+					YTSDict[row[0]] = []
+					YTSDict[row[0]].append(row[1])
+					try:
+						YTSDict[row[0]].append(row[2])
+					except:
+						YTSDict[row[0]].append("No Youtube video yet for this chapter")
+					# YTSDict[row[0]].append(int(row[3]))
 
+	
 	# Get Math Notes
-	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_M_RANGE).execute()
-	allRows = result.get('values', [])
+	if NOTES:
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_M_RANGE).execute()
+		allRows = result.get('values', [])
 
-	if not allRows:
-		print('No Links found.')
-	else:
-		for row in allRows:
-				#print(row)
-				NotesMDict[row[0]] = []
-				NotesMDict[row[0]].append(row[1])
-				try:
-					NotesMDict[row[0]].append(row[2])
-				except:
-					NotesMDict[row[0]].append("No notes yet for this chapter")
-				# NotesMDict[row[0]].append(int(row[3]))
+		if not allRows:
+			print('No Links found.')
+		else:
+			for row in allRows:
+					#print(row)
+					NotesMDict[row[0]] = []
+					NotesMDict[row[0]].append(row[1])
+					try:
+						NotesMDict[row[0]].append(row[2])
+					except:
+						NotesMDict[row[0]].append("No notes yet for this chapter")
+					# NotesMDict[row[0]].append(int(row[3]))
 
 	# Get Science Notes
-	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_S_RANGE).execute()
-	allRows = result.get('values', [])
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_S_RANGE).execute()
+		allRows = result.get('values', [])
 
-	if not allRows:
-		print('No Links found.')
-	else:
-		for row in allRows:
-				#print(row)
-				NotesSDict[row[0]] = []
-				NotesSDict[row[0]].append(row[1])
-				try:
-					NotesSDict[row[0]].append(row[2])
-				except:
-					NotesSDict[row[0]].append("No notes yet for this chapter")
-				# NotesSDict[row[0]].append(int(row[3]))
+		if not allRows:
+			print('No Links found.')
+		else:
+			for row in allRows:
+					#print(row)
+					NotesSDict[row[0]] = []
+					NotesSDict[row[0]].append(row[1])
+					try:
+						NotesSDict[row[0]].append(row[2])
+					except:
+						NotesSDict[row[0]].append("No notes yet for this chapter")
+					# NotesSDict[row[0]].append(int(row[3]))
 
 
 class BasicUser(Resource):
