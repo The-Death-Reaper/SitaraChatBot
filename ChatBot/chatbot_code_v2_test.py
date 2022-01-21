@@ -28,7 +28,7 @@ NOTES_S_RANGE = 'Notes Science!A2:D'
 # DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
 # DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
 MCQ_CHECK_RANGE='Recent Actitvity Per User - V2!A2:G'
-DOUBTS_RANGE='All Transactions - Doubts!A:C'
+DOUBTS_RANGE='Doubts!A:C'
 QUIZ = 0
 NOTES = 0
 YTLINKS = 1
@@ -154,11 +154,11 @@ class Transaction(Resource):
 		global curr_sheet
 		data= request.get_json()
 		QNo = data.get("QNo")
-		TS = str(datetime.datetime.now())
+		TimeStamp = str(datetime.datetime.now())
 		Ans = data.get("Answer")
 		Ph = data.get("Number")
 
-		values = [[TS, Ph, QNo, Ans]]
+		values = [[TimeStamp, Ph, QNo, Ans]]
 		body = {'values': values}
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=TRANSACTION_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
 		print('{0} cells appended basic MCQs.'.format(result.get('updates').get('updatedCells')))
@@ -168,11 +168,11 @@ class Queries(Resource):
 	def post(self):
 		global curr_sheet
 		data = request.get_json()
-		TS = str(datetime.datetime.now())
+		TimeStamp = str(datetime.datetime.now())
 		Query = data.get("Query")
 		Ph = data.get("Number")
 
-		values = [[TS, Ph, Query]]
+		values = [[TimeStamp, Ph, Query]]
 		body = {'values': values}
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=DOUBTS_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
 		print('{0} cells appended basic MCQs.'.format(result.get('updates').get('updatedCells')))
@@ -228,11 +228,11 @@ class DailyChallengeTransaction(Resource):
 		global curr_sheet
 		data= request.get_json()
 		QNo = data.get("QNo")
-		TS = str(datetime.datetime.now())
+		TimeStamp = str(datetime.datetime.now())
 		Ans = data.get("Answer")
 		Ph = data.get("Number")
 
-		values = [[TS, Ph, QNo, Ans]]
+		values = [[TimeStamp, Ph, QNo, Ans]]
 		body = {'values': values}
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=DC_TRANSACTION_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
 		print('{0} cells appended for Daily Challenge.'.format(result.get('updates').get('updatedCells')))
