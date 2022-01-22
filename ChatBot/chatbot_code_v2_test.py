@@ -1,4 +1,5 @@
 from __future__ import print_function
+from ast import Sub
 import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -37,12 +38,8 @@ YTLINKS = 1
 # Question Dictionary
 
 QDict = {}
-YTMDict = {}
-YTSDict = {}
-NotesSEDict = {}
-NotesSKDict = {}
-NotesMEDict = {}
-NotesMKDict = {}
+YTDict = {"1" : {}, "2" : {}}
+NotesDict = {"1" : {"E" : {}, "K" : {}}, "2" : {"E" : {}, "K" : {}}}
 DCDict = {}
 curr_sheet = ""
 
@@ -75,13 +72,13 @@ def readSheet(sheet):
 		else:
 			for row in allRows:
 					#print(row)
-					YTMDict[row[0]] = []
-					YTMDict[row[0]].append(row[1])
+					YTDict["1"][row[0]] = []
+					YTDict["1"][row[0]].append(row[1])
 					try:
-						YTMDict[row[0]].append(row[2])
+						YTDict["1"][row[0]].append(row[2])
 					except:
-						YTMDict[row[0]].append("No Youtube video yet for this chapter")
-					# YTMDict[row[0]].append(int(row[3]))
+						YTDict["1"][row[0]].append("No Youtube video yet for this chapter")
+					# YTDict["1"][row[0]].append(int(row[3]))
 
 
 	# Get Science Youtube Links
@@ -93,13 +90,13 @@ def readSheet(sheet):
 		else:
 			for row in allRows:
 					#print(row)
-					YTSDict[row[0]] = []
-					YTSDict[row[0]].append(row[1])
+					YTDict["2"][row[0]] = []
+					YTDict["2"][row[0]].append(row[1])
 					try:
-						YTSDict[row[0]].append(row[2])
+						YTDict["2"][row[0]].append(row[2])
 					except:
-						YTSDict[row[0]].append("No Youtube video yet for this chapter")
-					# YTSDict[row[0]].append(int(row[3]))
+						YTDict["2"][row[0]].append("No Youtube video yet for this chapter")
+					# YTDict["2"][row[0]].append(int(row[3]))
 
 	
 	# Get Math Notes
@@ -112,13 +109,13 @@ def readSheet(sheet):
 		else:
 			for row in allRows:
 					#print(row)
-					NotesMEDict[row[0]] = []
-					NotesMEDict[row[0]].append(row[1])
+					NotesDict["1"]["E"][row[0]] = []
+					NotesDict["1"]["E"][row[0]].append(row[1])
 					try:
-						NotesMEDict[row[0]].append(row[2])
+						NotesDict["1"]["E"][row[0]].append(row[2])
 					except:
-						NotesMEDict[row[0]].append("No notes yet for this chapter")
-					# NotesMEDict[row[0]].append(int(row[3]))
+						NotesDict["1"]["E"][row[0]].append("No notes yet for this chapter")
+					# NotesDict["1"]["E"][row[0]].append(int(row[3]))
 
 		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_M_K_RANGE).execute()
 		allRows = result.get('values', [])
@@ -128,13 +125,13 @@ def readSheet(sheet):
 		else:
 			for row in allRows:
 					#print(row)
-					NotesMKDict[row[0]] = []
-					NotesMKDict[row[0]].append(row[1])
+					NotesDict["1"]["K"][row[0]] = []
+					NotesDict["1"]["K"][row[0]].append(row[1])
 					try:
-						NotesMKDict[row[0]].append(row[2])
+						NotesDict["1"]["K"][row[0]].append(row[2])
 					except:
-						NotesMKDict[row[0]].append("No notes yet for this chapter")
-					# NotesMKDict[row[0]].append(int(row[3]))
+						NotesDict["1"]["K"][row[0]].append("No notes yet for this chapter")
+					# NotesDict["1"]["K"][row[0]].append(int(row[3]))
 
 	# Get Science Notes
 		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_S_E_RANGE).execute()
@@ -145,13 +142,13 @@ def readSheet(sheet):
 		else:
 			for row in allRows:
 					#print(row)
-					NotesSEDict[row[0]] = []
-					NotesSEDict[row[0]].append(row[1])
+					NotesDict["2"]["E"][row[0]] = []
+					NotesDict["2"]["E"][row[0]].append(row[1])
 					try:
-						NotesSEDict[row[0]].append(row[2])
+						NotesDict["2"]["E"][row[0]].append(row[2])
 					except:
-						NotesSEDict[row[0]].append("No notes yet for this chapter")
-					# NotesSEDict[row[0]].append(int(row[3]))
+						NotesDict["2"]["E"][row[0]].append("No notes yet for this chapter")
+					# NotesDict["2"]["E"][row[0]].append(int(row[3]))
 
 		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_S_K_RANGE).execute()
 		allRows = result.get('values', [])
@@ -161,13 +158,13 @@ def readSheet(sheet):
 		else:
 			for row in allRows:
 					#print(row)
-					NotesSKDict[row[0]] = []
-					NotesSKDict[row[0]].append(row[1])
+					NotesDict["2"]["K"][row[0]] = []
+					NotesDict["2"]["K"][row[0]].append(row[1])
 					try:
-						NotesSKDict[row[0]].append(row[2])
+						NotesDict["2"]["K"][row[0]].append(row[2])
 					except:
-						NotesSKDict[row[0]].append("No notes yet for this chapter")
-					# NotesSKDict[row[0]].append(int(row[3]))
+						NotesDict["2"]["K"][row[0]].append("No notes yet for this chapter")
+					# NotesDict["2"]["K"][row[0]].append(int(row[3]))
 
 
 class BasicUser(Resource):
@@ -220,10 +217,11 @@ class YouTubeLinks(Resource):
 		# print("here")
 		LinkIdx = data.get("LinkIdx")
 		Subject = data.get("Subject")
-		if "math" in Subject:
-			response = {"ChapterName":YTMDict[LinkIdx][0], "Link":YTMDict[LinkIdx][1]}
-		elif "science" in Subject:
-			response = {"ChapterName":YTSDict[LinkIdx][0], "Link":YTSDict[LinkIdx][1]}
+		response = {"ChapterName":YTDict[Subject][LinkIdx][0], "Link":YTDict[Subject][LinkIdx][1]}
+		# if "math" in Subject:
+		# 	response = {"ChapterName":YTMDict[LinkIdx][0], "Link":YTMDict[LinkIdx][1]}
+		# elif "science" in Subject:
+		# 	response = {"ChapterName":YTSDict[LinkIdx][0], "Link":YTSDict[LinkIdx][1]}
 		return response, 200
 
 class NotesLinks(Resource):
@@ -232,10 +230,7 @@ class NotesLinks(Resource):
 		# print("here")
 		Chapter = data.get("Chapter")
 		Subject = data.get("Subject")
-		if "math" in Subject:
-			response = {"ChapterName":NotesMEDict[Chapter][0], "LinkE":NotesMEDict[Chapter][1], "LinkK":NotesMKDict[Chapter][1]}
-		elif "science" in Subject:
-			response = {"ChapterName":NotesSEDict[Chapter][0], "LinkE":NotesSEDict[Chapter][1], "LinkK":NotesSKDict[Chapter][1]}
+		response = {"ChapterName":NotesDict[Subject]["E"][Chapter][0], "LinkE":NotesDict[Subject]["E"][Chapter][1], "LinkK":NotesDict[Subject]["K"][Chapter][1]}
 		return response, 200
 
 '''
