@@ -14,8 +14,12 @@
   - :white_check_mark: Math
   - :white_large_square: Science
 - :white_large_square: Notes
-  - :white_check_mark: Math (Drive Links Pending)
-  - :white_check_mark: Science (Drive Links Pending)
+  - :white_check_mark: Math
+    - :white_check_mark: English Drive Links 
+    - :white_check_mark: Kannada Drive Links
+  - :white_large_square: Science
+    - :white_large_square: English Drive Links 
+    - :white_large_square: Kannada Drive Links
 - :white_check_mark: Doubts/Queries
 - :white_large_square: Citizenship
 - :white_large_square: Integration with Glific
