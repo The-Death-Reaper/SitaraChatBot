@@ -12,7 +12,7 @@ from flask_session import Session
 from flask_cors import CORS
 
 import datetime
-
+DEBUG = 0
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/spreadsheets']
 
@@ -22,23 +22,27 @@ ALLQ_RANGE = 'AllQuestions!A:F'
 TRANSACTION_RANGE = 'All Transactions - V2!A:D'
 YOUTUBE_M_RANGE = 'YTLinksMath!A2:D'
 YOUTUBE_S_RANGE = 'YTLinksSci!A2:D'
-NOTES_M_RANGE = 'Notes Math!A2:D'
-NOTES_S_RANGE = 'Notes Science!A2:D'
+NOTES_M_E_RANGE = 'NotesMathEnglish!A2:D'
+NOTES_M_K_RANGE = 'NotesMathKannada!A2:D'
+NOTES_S_E_RANGE = 'NotesSci!A2:D'
+NOTES_S_K_RANGE = 'NotesSci!A2:D'
 # DCQ_RANGE = "DailyChallenge!A2:E11"
 # DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
 # DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
 MCQ_CHECK_RANGE='Recent Actitvity Per User - V2!A2:G'
 DOUBTS_RANGE='Doubts!A:C'
 QUIZ = 0
-NOTES = 0
+NOTES = 1
 YTLINKS = 1
 # Question Dictionary
 
 QDict = {}
 YTMDict = {}
 YTSDict = {}
-NotesSDict = {}
-NotesMDict = {}
+NotesSEDict = {}
+NotesSKDict = {}
+NotesMEDict = {}
+NotesMKDict = {}
 DCDict = {}
 curr_sheet = ""
 
@@ -100,7 +104,7 @@ def readSheet(sheet):
 	
 	# Get Math Notes
 	if NOTES:
-		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_M_RANGE).execute()
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_M_E_RANGE).execute()
 		allRows = result.get('values', [])
 
 		if not allRows:
@@ -108,16 +112,32 @@ def readSheet(sheet):
 		else:
 			for row in allRows:
 					#print(row)
-					NotesMDict[row[0]] = []
-					NotesMDict[row[0]].append(row[1])
+					NotesMEDict[row[0]] = []
+					NotesMEDict[row[0]].append(row[1])
 					try:
-						NotesMDict[row[0]].append(row[2])
+						NotesMEDict[row[0]].append(row[2])
 					except:
-						NotesMDict[row[0]].append("No notes yet for this chapter")
-					# NotesMDict[row[0]].append(int(row[3]))
+						NotesMEDict[row[0]].append("No notes yet for this chapter")
+					# NotesMEDict[row[0]].append(int(row[3]))
+
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_M_K_RANGE).execute()
+		allRows = result.get('values', [])
+
+		if not allRows:
+			print('No Links found.')
+		else:
+			for row in allRows:
+					#print(row)
+					NotesMKDict[row[0]] = []
+					NotesMKDict[row[0]].append(row[1])
+					try:
+						NotesMKDict[row[0]].append(row[2])
+					except:
+						NotesMKDict[row[0]].append("No notes yet for this chapter")
+					# NotesMKDict[row[0]].append(int(row[3]))
 
 	# Get Science Notes
-		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_S_RANGE).execute()
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_S_E_RANGE).execute()
 		allRows = result.get('values', [])
 
 		if not allRows:
@@ -125,13 +145,29 @@ def readSheet(sheet):
 		else:
 			for row in allRows:
 					#print(row)
-					NotesSDict[row[0]] = []
-					NotesSDict[row[0]].append(row[1])
+					NotesSEDict[row[0]] = []
+					NotesSEDict[row[0]].append(row[1])
 					try:
-						NotesSDict[row[0]].append(row[2])
+						NotesSEDict[row[0]].append(row[2])
 					except:
-						NotesSDict[row[0]].append("No notes yet for this chapter")
-					# NotesSDict[row[0]].append(int(row[3]))
+						NotesSEDict[row[0]].append("No notes yet for this chapter")
+					# NotesSEDict[row[0]].append(int(row[3]))
+
+		result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NOTES_S_K_RANGE).execute()
+		allRows = result.get('values', [])
+
+		if not allRows:
+			print('No Links found.')
+		else:
+			for row in allRows:
+					#print(row)
+					NotesSKDict[row[0]] = []
+					NotesSKDict[row[0]].append(row[1])
+					try:
+						NotesSKDict[row[0]].append(row[2])
+					except:
+						NotesSKDict[row[0]].append("No notes yet for this chapter")
+					# NotesSKDict[row[0]].append(int(row[3]))
 
 
 class BasicUser(Resource):
@@ -194,12 +230,12 @@ class NotesLinks(Resource):
 	def post(self):
 		data= request.get_json()
 		# print("here")
-		LinkIdx = data.get("LinkIdx")
+		Chapter = data.get("Chapter")
 		Subject = data.get("Subject")
 		if "math" in Subject:
-			response = {"ChapterName":NotesMDict[LinkIdx][0], "Link":NotesMDict[LinkIdx][1]}
+			response = {"ChapterName":NotesMEDict[Chapter][0], "LinkE":NotesMEDict[Chapter][1], "LinkK":NotesMKDict[Chapter][1]}
 		elif "science" in Subject:
-			response = {"ChapterName":NotesSDict[LinkIdx][0], "Link":NotesSDict[LinkIdx][1]}
+			response = {"ChapterName":NotesSEDict[Chapter][0], "LinkE":NotesSEDict[Chapter][1], "LinkK":NotesSKDict[Chapter][1]}
 		return response, 200
 
 '''
@@ -322,7 +358,10 @@ def main():
 	app.config['SESSION_TYPE'] = 'sheets'
 
 	sess.init_app(app)
-	app.run(debug=False, host="0.0.0.0", port=7000)
+	if DEBUG:
+		app.run(debug=False, host="0.0.0.0", port=7000)
+	else:
+		app.run(debug=False, host="0.0.0.0", port=80)
 
 
 if __name__ == '__main__':
