@@ -25,7 +25,7 @@
 - :white_large_square: Integration with Glific
   - :white_check_mark: Youtube Links
   - :white_large_square: Quiz
-  - :white_large_square: Notes
+  - :white_check_mark: Notes
   - :white_check_mark: Doubts/Queries
   - :white_large_square: Citizenship 
 ### Setup
