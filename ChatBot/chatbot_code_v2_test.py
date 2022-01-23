@@ -1,6 +1,7 @@
 from __future__ import print_function
 from ast import Sub
 import os.path
+from tokenize import Name
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -32,6 +33,7 @@ NOTES_S_K_RANGE = 'NotesSci!A2:D'
 # DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
 MCQ_CHECK_RANGE='Recent Actitvity Per User - V2!A2:G'
 DOUBTS_RANGE='Doubts!A:C'
+FEEDBACK_RANGE='FeedBack/Suggestions!A:C'
 QUIZ = 0
 NOTES = 1
 YTLINKS = 1
@@ -228,7 +230,18 @@ class NotesLinks(Resource):
 		Subject = data.get("Subject")
 		response = {"ChapterName":NotesDict[Subject]["E"][Chapter][0], "LinkE":NotesDict[Subject]["E"][Chapter][1], "LinkK":NotesDict[Subject]["K"][Chapter][1]}
 		return response, 200
-
+class Feedback(Resource):
+	def post(self):
+		global curr_sheet
+		data = request.get_json()
+		Number = data.get("number")
+		Name = data.get("name")
+		Feedback = data.get("feedback")
+		TimeStamp = str(datetime.datetime.now())
+		values = [[TimeStamp, Number, Name, Feedback]]
+		body = {'values': values}
+		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=FEEDBACK_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
+		return {"Updated Cells":result.get('updates').get('updatedCells')}, 200
 '''
 class DailyChallengeQuestion(Resource):
 	def get(self):
@@ -343,6 +356,7 @@ def main():
 	# api.add_resource(DailyChallengePerformance, "/api/v1/dc_performance", endpoint="DailyChallengePerformance")
 
 	api.add_resource(Queries, "/api/v1/query", endpoint="Queries")
+	api.add_resource(Feedback, "/api/v1/feedback", endpoint="Feedback")
 	api.add_resource(QuestionCount, "/api/v1/qcount", endpoint="QuestionCount")
 
 	app.secret_key = 'super secret key'
