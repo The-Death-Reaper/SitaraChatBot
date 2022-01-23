@@ -218,10 +218,6 @@ class YouTubeLinks(Resource):
 		LinkIdx = data.get("LinkIdx")
 		Subject = data.get("Subject")
 		response = {"ChapterName":YTDict[Subject][LinkIdx][0], "Link":YTDict[Subject][LinkIdx][1]}
-		# if "math" in Subject:
-		# 	response = {"ChapterName":YTMDict[LinkIdx][0], "Link":YTMDict[LinkIdx][1]}
-		# elif "science" in Subject:
-		# 	response = {"ChapterName":YTSDict[LinkIdx][0], "Link":YTSDict[LinkIdx][1]}
 		return response, 200
 
 class NotesLinks(Resource):
