@@ -22,12 +22,14 @@
     - :white_large_square: Kannada Drive Links
 - :white_check_mark: Doubts/Queries
 - :white_large_square: Citizenship
+- :white_check_mark: Feedback/Suggestions
 - :white_large_square: Integration with Glific
   - :white_check_mark: Youtube Links
   - :white_large_square: Quiz
   - :white_check_mark: Notes
   - :white_check_mark: Doubts/Queries
   - :white_large_square: Citizenship 
+  - :white_check_mark: Feedback/Suggestions 
 ### Setup
 
 - `bash requirements.sh`
