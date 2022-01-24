@@ -34,6 +34,7 @@ NOTES_S_K_RANGE = 'NotesSci!A2:D'
 MCQ_CHECK_RANGE='Recent Actitvity Per User - V2!A2:G'
 DOUBTS_RANGE='Doubts!A:C'
 FEEDBACK_RANGE='FeedBack/Suggestions!A:C'
+UFEEDBACK_RANGE='UFeedBack!A:C'
 QUIZ = 0
 NOTES = 1
 YTLINKS = 1
@@ -242,6 +243,22 @@ class Feedback(Resource):
 		body = {'values': values}
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=FEEDBACK_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
 		return {"Updated Cells":result.get('updates').get('updatedCells')}, 200
+class UserFeedback(Resource):
+	def post(self):
+		global curr_sheet
+		data = request.get_json()
+		Number = data.get("number")
+		Name = data.get("name")
+		Feedback = data.get("feedback")
+		TimeStamp = str(datetime.datetime.now())
+		values = [[TimeStamp, Number, Name, Feedback]]
+		body = {'values': values}
+		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=UFEEDBACK_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
+		return {"Updated Cells":result.get('updates').get('updatedCells')}, 200
+
+class NewUser(Resource):
+	def post(self):
+		global curr_sheet
 '''
 class DailyChallengeQuestion(Resource):
 	def get(self):
@@ -357,6 +374,7 @@ def main():
 
 	api.add_resource(Queries, "/api/v1/query", endpoint="Queries")
 	api.add_resource(Feedback, "/api/v1/feedback", endpoint="Feedback")
+	api.add_resource(UserFeedback, "/api/v1/ufeedback", endpoint="UserFeedback")
 	api.add_resource(QuestionCount, "/api/v1/qcount", endpoint="QuestionCount")
 
 	app.secret_key = 'super secret key'
