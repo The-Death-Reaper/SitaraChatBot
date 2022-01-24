@@ -1,6 +1,7 @@
 from __future__ import print_function
 from ast import Sub
 import os.path
+from sqlite3 import Time
 from tokenize import Name
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -33,6 +34,7 @@ NOTES_S_K_RANGE = 'NotesSci!A2:D'
 # DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
 MCQ_CHECK_RANGE='Recent Actitvity Per User - V2!A2:G'
 DOUBTS_RANGE='Doubts!A:C'
+TRACK_DOUBTS_RANGE='Doubts!A:D'
 FEEDBACK_RANGE='FeedBack/Suggestions!A:C'
 UFEEDBACK_RANGE='UFeedBack!A:C'
 QUIZ = 0
@@ -214,6 +216,42 @@ class Queries(Resource):
 		print('{0} cells appended basic MCQs.'.format(result.get('updates').get('updatedCells')))
 		return {"Updated Cells":result.get('updates').get('updatedCells')}, 200
 
+class TrackQuery(Resource):
+	def post(self):
+		global curr_sheet
+		data = request.get_json()
+		Number = data.get("number")
+		
+		CurrentTimeStamp = datetime.datetime.now()
+		formatter = "%Y-%m-%d %H:%M:%S"
+		# DoubtsTimeStamp = str(datetime.datetime.now())
+
+		result = curr_sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=TRACK_DOUBTS_RANGE).execute()
+		allRows = result.get('values', [])
+		doubts_list = []
+		timestamp_list = []
+		pending_doubts = 0
+		if not allRows:
+			print("Cool cool cool cool cool No Doubt No Doubt")
+			return {"result":"No doubt found"}, 200
+		else:
+			for row in allRows:
+				# print(row)
+				if(row[1] == Number and row[3] == "Pending"):
+					pending_doubts+=1
+					DoubtsTimeStamp = datetime.datetime.strptime(row[0], formatter)
+					# print(CurrentTimeStamp, DoubtsTimeStamp)
+					TimeLeft = 6 - (CurrentTimeStamp - DoubtsTimeStamp).total_seconds()//3600
+					Hours = " Hours"
+					if TimeLeft <= 1:
+						TimeLeft = 1
+						Hours = " Hour"
+					doubts_list.append(row[2] + " - Akka will resolve it in the next " + str(TimeLeft) + Hours)
+					# timestamp_list.append((CurrentTimeStamp - DoubtsTimeStamp).total_seconds()//3600)
+
+
+		return {"pending":str(pending_doubts), "doubts":"\n".join(doubts_list)}, 200
+
 class YouTubeLinks(Resource):
 	def post(self):
 		data= request.get_json()
@@ -373,6 +411,7 @@ def main():
 	# api.add_resource(DailyChallengePerformance, "/api/v1/dc_performance", endpoint="DailyChallengePerformance")
 
 	api.add_resource(Queries, "/api/v1/query", endpoint="Queries")
+	api.add_resource(TrackQuery, "/api/v1/tquery", endpoint="TrackQuery")
 	api.add_resource(Feedback, "/api/v1/feedback", endpoint="Feedback")
 	api.add_resource(UserFeedback, "/api/v1/ufeedback", endpoint="UserFeedback")
 	api.add_resource(QuestionCount, "/api/v1/qcount", endpoint="QuestionCount")
