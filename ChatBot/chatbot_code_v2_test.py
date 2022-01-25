@@ -1,7 +1,8 @@
 from __future__ import print_function
-from ast import Sub
+from ast import Num, Sub
 import os.path
 from sqlite3 import Time
+from tkinter import N
 from tokenize import Name
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -21,6 +22,7 @@ SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.
 
 # The ID and range of a sample spreadsheet.
 SPREADSHEET_ID = '1eRER4f4vc9yFjISIXXhUZ9JBrkBp6GRoCPMKaFkB8Q8'
+NEW_USER = "NewUser!A:C"
 ALLQ_RANGE = 'AllQuestions!A:F'
 TRANSACTION_RANGE = 'All Transactions - V2!A:D'
 YOUTUBE_M_RANGE = 'YTLinksMath!A2:D'
@@ -42,6 +44,7 @@ NOTES = 1
 YTLINKS = 1
 # Question Dictionary
 
+UsersDict = {}
 QDict = {}
 YTDict = {"1" : {}, "2" : {}}
 NotesDict = {"1" : {"E" : {}, "K" : {}}, "2" : {"E" : {}, "K" : {}}}
@@ -170,6 +173,8 @@ def readSheet(sheet):
 					except:
 						NotesDict["2"]["K"][row[0]].append("No notes yet for this chapter")
 					# NotesDict["2"]["K"][row[0]].append(int(row[3]))
+		#get users data
+
 
 
 class BasicUser(Resource):
@@ -297,8 +302,33 @@ class UserFeedback(Resource):
 		return {"Updated Cells":result.get('updates').get('updatedCells')}, 200
 
 class NewUser(Resource):
+	def get(self):
+		global curr_sheet
+		result = curr_sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NEW_USER).execute()
+		allRows = result.get('values', [])
+
+		data = request.get_json()
+		Number = data.get("number")
+		if not allRows:
+			print("No Users Found")
+		else:
+			for row in allRows:
+				if row[1] == Number:
+					return {}, 200
+		return {}, 500
+	
 	def post(self):
 		global curr_sheet
+		data = request.get_json()
+		Number = data.get("number")
+		Location = data.get("location")
+		TimeStamp = str(datetime.datetime.now())
+
+		values = [[TimeStamp, Number, Location]]
+		body = {'values': values}
+		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=NEW_USER, valueInputOption='USER_ENTERED', body=body).execute()
+		return {"Updated Cells":result.get('updates').get('updatedCells')}, 200
+
 '''
 class DailyChallengeQuestion(Resource):
 	def get(self):
@@ -401,6 +431,7 @@ def main():
 	curr_sheet = service.spreadsheets()
 	readSheet(curr_sheet)
 	# API config
+	api.add_resource(NewUser, "/api/v1/newuser", endpoint="NewUser")
 	api.add_resource(BasicUser, "/api/v1/basic_user", endpoint="BasicUser")
 	api.add_resource(Transaction, "/api/v1/transaction", endpoint="Transaction")
 	api.add_resource(YouTubeLinks, "/api/v1/yt_link", endpoint="YouTubeLinks")
