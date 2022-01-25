@@ -233,7 +233,7 @@ class TrackQuery(Resource):
 		pending_doubts = 0
 		if not allRows:
 			print("Cool cool cool cool cool No Doubt No Doubt")
-			return {"result":"No doubt found"}, 200
+			return {"pending":str(0), "doubts":"Do ask Akka your doubts"}, 200
 		else:
 			for row in allRows:
 				# print(row)
