@@ -249,8 +249,10 @@ class TrackQuery(Resource):
 					doubts_list.append(row[2] + " - Akka will resolve it in the next " + str(TimeLeft) + Hours)
 					# timestamp_list.append((CurrentTimeStamp - DoubtsTimeStamp).total_seconds()//3600)
 
-
-		return {"pending":str(pending_doubts), "doubts":"\n".join(doubts_list)}, 200
+		if pending_doubts:
+			return {"pending":str(pending_doubts), "doubts":"\n".join(doubts_list)}, 200
+		else:
+			return {"pending":str(0), "doubts":"Do ask Akka your doubts"}, 200
 
 class YouTubeLinks(Resource):
 	def post(self):
