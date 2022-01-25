@@ -1,8 +1,6 @@
 from __future__ import print_function
-from ast import Num, Sub
 import os.path
 from sqlite3 import Time
-from tkinter import N
 from tokenize import Name
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
