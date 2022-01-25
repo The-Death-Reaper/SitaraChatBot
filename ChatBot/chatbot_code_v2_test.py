@@ -299,8 +299,8 @@ class UserFeedback(Resource):
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=UFEEDBACK_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
 		return {"Updated Cells":result.get('updates').get('updatedCells')}, 200
 
-class NewUser(Resource):
-	def get(self):
+class NewUser1(Resource):
+	def post(self):
 		global curr_sheet
 		result = curr_sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NEW_USER).execute()
 		allRows = result.get('values', [])
@@ -314,7 +314,9 @@ class NewUser(Resource):
 				if row[1] == Number:
 					return {}, 200
 		return {}, 500
-	
+
+
+class NewUser2(Resource):
 	def post(self):
 		global curr_sheet
 		data = request.get_json()
@@ -429,7 +431,8 @@ def main():
 	curr_sheet = service.spreadsheets()
 	readSheet(curr_sheet)
 	# API config
-	api.add_resource(NewUser, "/api/v1/newuser", endpoint="NewUser")
+	api.add_resource(NewUser1, "/api/v1/newuser1", endpoint="NewUser1")
+	api.add_resource(NewUser2, "/api/v1/newuser2", endpoint="NewUser2")
 	api.add_resource(BasicUser, "/api/v1/basic_user", endpoint="BasicUser")
 	api.add_resource(Transaction, "/api/v1/transaction", endpoint="Transaction")
 	api.add_resource(YouTubeLinks, "/api/v1/yt_link", endpoint="YouTubeLinks")
