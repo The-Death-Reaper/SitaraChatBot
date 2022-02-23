@@ -1,4 +1,5 @@
 from __future__ import print_function
+import imp
 import os.path
 import re
 from sqlite3 import Time
@@ -78,6 +79,19 @@ class CheckPaidUser(Resource):
 			for row in allRows:
 				if row[0] == Number:
 					return {}, 200
+		return {}, 500
+
+import pytz
+class GetCurrenTime(Resource):
+	def post(self):
+		global curr_sheet
+		IST = pytz.timezone('Asia/Kolkata')
+		curr_time = datetime.datetime.now(IST)
+		curr_hour = curr_time.time().hour
+		begin_working_hour = 17
+		end_working_hour = 22
+		if curr_hour >= begin_working_hour and curr_hour < end_working_hour:
+			return {}, 200
 		return {}, 500
 
 
@@ -180,6 +194,7 @@ def main():
 	# api.add_resource(NewUser2, "/api/v1/newuser2", endpoint="NewUser2")
 	api.add_resource(StoreScreenShot, "/api/v1/ss", endpoint="StoreScreenShot")
 	api.add_resource(Feedback, "/api/v1/feedback", endpoint="Feedback")
+	api.add_resource(GetCurrenTime, "/api/v1/getcurrenttime", endpoint="GetCurrenTime")
 
 	app.secret_key = 'super secret key'
 	app.config['SESSION_TYPE'] = 'sheets'
