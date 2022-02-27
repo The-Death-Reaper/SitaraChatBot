@@ -16,6 +16,7 @@ from flask_session import Session
 from flask_cors import CORS
 
 import datetime
+
 DEBUG = 0
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/spreadsheets']
@@ -24,8 +25,9 @@ SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.
 SPREADSHEET_ID = '1_cI2G8TvBrYxiEEixKnayq7bLubDb0yQS8oNO4twWoM'
 PAID_USER = "PaidUserData!A:A"
 YOUTUBE_LINKS_RANGE = 'YTLinks!A2:C'
-FEEDBACK_RANGE='FeedBack!A:D'
-SCREENSHOT_RANGE='ScreenShots!A2:D'
+FEEDBACK_RANGE = 'FeedBack!A:D'
+SCREENSHOT_RANGE = 'ScreenShots!A2:D'
+NEW_USER = 'UserData!A2:C'
 
 curr_sheet = ""
 
@@ -111,7 +113,8 @@ class Feedback(Resource):
 		Number = data.get("number")
 		Name = data.get("name")
 		Feedback = data.get("feedback")
-		TimeStamp = str(datetime.datetime.now())
+		IST = pytz.timezone('Asia/Kolkata')
+		TimeStamp = str(datetime.datetime.now(IST))
 		values = [[TimeStamp, Number, Name, Feedback]]
 		body = {'values': values}
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=FEEDBACK_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
@@ -124,7 +127,8 @@ class StoreScreenShot(Resource):
 		Number = data.get("number")
 		Name = data.get("name")
 		ScreenShot = data.get("screenshot")
-		TimeStamp = str(datetime.datetime.now())
+		IST = pytz.timezone('Asia/Kolkata')
+		TimeStamp = str(datetime.datetime.now(IST))
 		values = [[TimeStamp, Number, Name, ScreenShot]]
 		body = {'values': values}
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=SCREENSHOT_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
@@ -137,7 +141,8 @@ class UserFeedback(Resource):
 		Number = data.get("number")
 		Name = data.get("name")
 		Feedback = data.get("feedback")
-		TimeStamp = str(datetime.datetime.now())
+		IST = pytz.timezone('Asia/Kolkata')
+		TimeStamp = str(datetime.datetime.now(IST))
 		values = [[TimeStamp, Number, Name, Feedback]]
 		body = {'values': values}
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=UFEEDBACK_RANGE, valueInputOption='USER_ENTERED', body=body).execute()
@@ -149,13 +154,30 @@ class NewUser2(Resource):
 		global curr_sheet
 		data = request.get_json()
 		Number = data.get("number")
-		Location = data.get("location")
-		TimeStamp = str(datetime.datetime.now())
+		Name = data.get("name")
+		IST = pytz.timezone('Asia/Kolkata')
+		TimeStamp = str(datetime.datetime.now(IST))
 
-		values = [[TimeStamp, Number, Location]]
+		values = [[TimeStamp, Number, Name]]
 		body = {'values': values}
 		result = curr_sheet.values().append(spreadsheetId=SPREADSHEET_ID, range=NEW_USER, valueInputOption='USER_ENTERED', body=body).execute()
 		return {"Updated Cells":result.get('updates').get('updatedCells')}, 200
+
+# class NewUser1(Resource):
+# 	def post(self):
+# 		global curr_sheet
+# 		result = curr_sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=NEW_USER).execute()
+# 		allRows = result.get('values', [])
+
+# 		data = request.get_json()
+# 		Number = data.get("number")
+# 		if not allRows:
+# 			print("No Users Found")
+# 		else:
+# 			for row in allRows:
+# 				if row[1] == Number:
+# 					return {}, 200
+# 		return {}, 500
 
 def main():
 	app = Flask(__name__)
@@ -191,7 +213,7 @@ def main():
 	# readSheet(curr_sheet)
 	# API config
 	api.add_resource(CheckPaidUser, "/api/v1/paiduser", endpoint="CheckPaidUser")
-	# api.add_resource(NewUser2, "/api/v1/newuser2", endpoint="NewUser2")
+	api.add_resource(NewUser2, "/api/v1/newuser2", endpoint="NewUser2")
 	api.add_resource(StoreScreenShot, "/api/v1/ss", endpoint="StoreScreenShot")
 	api.add_resource(Feedback, "/api/v1/feedback", endpoint="Feedback")
 	api.add_resource(GetCurrenTime, "/api/v1/getcurrenttime", endpoint="GetCurrenTime")
