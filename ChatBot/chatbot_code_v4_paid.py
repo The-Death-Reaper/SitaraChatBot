@@ -22,12 +22,12 @@ DEBUG = 0
 SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
-SPREADSHEET_ID = '1_cI2G8TvBrYxiEEixKnayq7bLubDb0yQS8oNO4twWoM'
-PAID_USER = "PaidUserData!A:A"
+SPREADSHEET_ID = '1O5VV-uVRD7GcfRnAfbfo_5Vj80mJ1io1TGflxuG1Pxs'
+PAID_USER = "Paid User Data!A:A"
 YOUTUBE_LINKS_RANGE = 'YTLinks!A2:C'
-FEEDBACK_RANGE = 'FeedBack!A:D'
+FEEDBACK_RANGE = 'User FeedBack!A:D'
 SCREENSHOT_RANGE = 'ScreenShots!A2:D'
-NEW_USER = 'UserData!A2:C'
+NEW_USER = 'All Users Data!A2:C'
 
 curr_sheet = ""
 
