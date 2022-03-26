@@ -126,7 +126,7 @@ class DailyChallengeQuestion(Resource):
 		else:
 			for row in allRows:
 				DCDict[row[1]] = [row[2], row[4]]
-
+		DCDict['Start'] = [allRows[0][2], allRows[0][4]]
 		return {"Daily Challenge Updated":str(datetime.datetime.now())}, 200
 
 	def post(self):
