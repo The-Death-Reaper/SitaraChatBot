@@ -14,16 +14,16 @@ from flask_cors import CORS
 import datetime
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/drive.file']
+SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
-SPREADSHEET_ID = '1lJ_V7pM-zDVedVIgyH85GcWVk-yskrXixuFLnPsoAUU'
-ALLQ_RANGE = 'AllQuestions!A:F'
+SPREADSHEET_ID = '1ku_JyM36zMu2IVxjfUtil9phubcyoQXUkc5VUue_Se8'
+ALLQ_RANGE = 'All Questions!A:F'
 TRANSACTION_RANGE = 'MCQTransactions!A:D'
 YOUTUBE_RANGE = 'YouTubeLinks!A2:D'
-DCQ_RANGE = "DailyChallenge!A2:E11"
-DC_TRANSACTION_RANGE='DailyChallengeTransactions!A:D'
-DC_PERF_RANGE='DailyChallengeRecentTransactions!A2:G'
+DCQ_RANGE = "Daily Challenge!A2:E11"
+DC_TRANSACTION_RANGE='DC Transactions!A:D'
+DC_PERF_RANGE='Recent Activity Per User - DC!A2:G'
 MCQ_CHECK_RANGE='LastUserTransaction!A2:G'
 DOUBTS_RANGE='Doubts/Queries!A:C'
 
@@ -50,18 +50,18 @@ def readSheet(sheet):
 				QDict[row[0]].append(row[3])
 				QDict[row[0]].append(row[4])
 
-	result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_RANGE).execute()
-	allRows = result.get('values', [])
+	# result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=YOUTUBE_RANGE).execute()
+	# allRows = result.get('values', [])
 
-	if not allRows:
-		print('No Links found.')
-	else:
-		for row in allRows:
-				#print(row)
-				YTDict[row[0]] = []
-				YTDict[row[0]].append(row[1])
-				YTDict[row[0]].append(row[2])
-				YTDict[row[0]].append(int(row[3]))
+	# if not allRows:
+	# 	print('No Links found.')
+	# else:
+	# 	for row in allRows:
+	# 			#print(row)
+	# 			YTDict[row[0]] = []
+	# 			YTDict[row[0]].append(row[1])
+	# 			YTDict[row[0]].append(row[2])
+	# 			YTDict[row[0]].append(int(row[3]))
 
 
 class BasicUser(Resource):
@@ -162,7 +162,7 @@ class DailyChallengePerformance(Resource):
 		else:
 			data= request.get_json()
 			Ph = data.get("Number")
-			for row in allRows:
+			for row in allRows[1:]:
 				if(row[1] == Ph):
 					return {"Performance":row[6]}, 200
 
