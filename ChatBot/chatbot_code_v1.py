@@ -121,7 +121,7 @@ class DailyChallengeQuestion(Resource):
 		result = curr_sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=DCQ_RANGE).execute()
 		allRows = result.get('values', [])
 
-	  	if not allRows:
+		if not allRows:
 			print('No Questions found.')
 		else:
 			for row in allRows:
@@ -156,7 +156,7 @@ class DailyChallengePerformance(Resource):
 		result = curr_sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=DC_PERF_RANGE).execute()
 		allRows = result.get('values', [])
 
-	  	if not allRows:
+		if not allRows:
 			print('No Questions found.')
 			return {"Error":"Performance Not Found"}, 500
 		else:
@@ -172,7 +172,7 @@ class MCQAnswer(Resource):
 		result = curr_sheet.values().get(spreadsheetId=SPREADSHEET_ID,range=MCQ_CHECK_RANGE).execute()
 		allRows = result.get('values', [])
 
-	  	if not allRows:
+		if not allRows:
 			print('No Questions found.')
 			return {"Error":"Performance Not Found"}, 500
 		else:
